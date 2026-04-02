@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// * ENUMS 
+enum Role {
+  VIEWER
+  ANALYST
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum Category {
+  SALARY
+  FREELANCE
+  INVESTMENT
+  RENT
+  FOOD
+  TRANSPORT
+  UTILITIES
+  HEALTHCARE
+  ENTERTAINMENT
+  EDUCATION
+  OTHER
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum AuditEntity {
+  USER
+  FINANCIAL_RECORD
+}
+
+// * MODELS
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  role         Role       @default(VIEWER)
+  status       UserStatus @default(ACTIVE)
+
+  records   FinancialRecord[]
+  auditLogs AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model FinancialRecord {
+  id        String          @id @default(uuid())
+  amount    Decimal         @db.Decimal(12, 2)
+  type      TransactionType
+  category  Category
+  date      DateTime
+  notes     String?
+  isDeleted Boolean         @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([type])
+  @@index([category])
+  @@index([date])
+  @@index([isDeleted])
+  @@map("financial_records")
+}
+
+model AuditLog {
+  id       String      @id @default(uuid())
+  action   AuditAction
+  entity   AuditEntity
+  entityId String
+  metadata Json?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([entity, entityId])
+  @@map("audit_logs")
+}
