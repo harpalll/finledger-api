@@ -1,15 +1,24 @@
 import bcrypt from "bcrypt";
 import { prisma } from "../../config/db";
-import { Role, UserStatus } from "../../../generated/prisma/enums";
+import {
+  AuditAction,
+  AuditEntity,
+  Role,
+  UserStatus,
+} from "../../../generated/prisma/enums";
 import type { User } from "../../types";
+import { logAudit } from "../../utils/auditLogger";
 
-export const createUserService = async (data: {
-  name: string;
-  email: string;
-  password: string;
-  role?: Role;
-  status?: UserStatus;
-}) => {
+export const createUserService = async (
+  data: {
+    name: string;
+    email: string;
+    password: string;
+    role?: Role;
+    status?: UserStatus;
+  },
+  currentUser: User,
+) => {
   const existingUser = await prisma.user.findUnique({
     where: { email: data.email },
   });
@@ -29,6 +38,17 @@ export const createUserService = async (data: {
       status: data.status || UserStatus.ACTIVE,
     },
   });
+
+  logAudit({
+    action: AuditAction.CREATE,
+    entity: AuditEntity.USER,
+    entityId: user.id,
+    userId: currentUser.userId,
+    metadata: {
+      createdUserEmail: user.email,
+      role: user.role,
+    },
+  }).catch(console.error);
 
   return {
     id: user.id,
@@ -83,6 +103,21 @@ export const updateUserService = async (
     where: { id: userId },
     data,
   });
+
+  // fire-and-forget audit log
+  logAudit({
+    action: AuditAction.UPDATE,
+    entity: AuditEntity.USER,
+    entityId: userId,
+    userId: currentUser.userId,
+    metadata: {
+      oldData: {
+        role: user.role,
+        status: user.status,
+      },
+      newData: data,
+    },
+  }).catch(console.error);
 
   return {
     id: updatedUser.id,

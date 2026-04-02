@@ -8,7 +8,7 @@ import {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const result = await createUserService(req.body);
+    const result = await createUserService(req.body, req.user!);
 
     return res.status(201).json(new ApiResponse(true, result, null));
   } catch (error: any) {
