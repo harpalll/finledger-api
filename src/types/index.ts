@@ -6,6 +6,6 @@ export type errorMessage = {
 };
 
 export interface User {
-  userId: number;
+  userId: string;
   role: Role;
 }

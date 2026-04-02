@@ -11,6 +11,10 @@ export const loginUser = async (email: string, password: string) => {
     throw new Error("Invalid credentials");
   }
 
+  if (user.status === "INACTIVE") {
+    throw new Error("User is inactive");
+  }
+
   const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
 
   if (!isPasswordValid) {

@@ -13,5 +13,7 @@ app.get("/api/v1/health", (_, res) => {
 });
 
 import authRoutes from "./modules/auth/auth.route";
+import userRoutes from "./modules/user/user.route";
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", userRoutes);
