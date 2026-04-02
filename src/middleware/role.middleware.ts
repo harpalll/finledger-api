@@ -2,7 +2,7 @@ import type { Role } from "../../generated/prisma/enums";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ApiResponse } from "../utils/ApiResponse";
 import { StatusCodes } from "http-status-codes";
-import { rolePermissions, type Permission } from "../config/pemissions";
+import { rolePermissions, type Permission } from "../config/permissions";
 
 // export const allowedRoles = (allowedRoles: Role[]) => {
 //   return asyncHandler(async (req, res, next) => {

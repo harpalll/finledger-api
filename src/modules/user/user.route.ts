@@ -4,7 +4,7 @@ import { validateData } from "../../middleware/validation.middleware";
 import { createUserSchema, updateUserSchema } from "./user.validation";
 import { authMiddleware } from "../../middleware/auth.middleware";
 import { requirePermission } from "../../middleware/role.middleware";
-import { Permission } from "../../config/pemissions";
+import { Permission } from "../../config/permissions";
 
 const router = Router();
 

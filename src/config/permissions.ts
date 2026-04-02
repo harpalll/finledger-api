@@ -1,3 +1,5 @@
+import type { Role } from "../../generated/prisma/enums";
+
 export enum Permission {
   CREATE_USER = "CREATE_USER",
   READ_USER = "READ_USER",
@@ -10,8 +12,6 @@ export enum Permission {
 
   READ_DASHBOARD = "READ_DASHBOARD",
 }
-
-import type { Role } from "../../generated/prisma/enums";
 
 export const rolePermissions: Record<Role, Permission[]> = {
   VIEWER: [Permission.READ_DASHBOARD],
