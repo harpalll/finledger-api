@@ -49,7 +49,7 @@ async function main() {
     },
   });
 
-  console.log("✅ Users seeded");
+  console.log("Users seeded");
 
   await prisma.financialRecord.createMany({
     data: [
@@ -88,7 +88,7 @@ async function main() {
     ],
   });
 
-  console.log("✅ Financial records seeded");
+  console.log("Financial records seeded");
 
   await prisma.auditLog.create({
     data: {
@@ -100,14 +100,14 @@ async function main() {
     },
   });
 
-  console.log("✅ Audit logs seeded");
+  console.log("Audit logs seeded");
 
-  console.log("🎉 Seeding completed!");
+  console.log("Seeding completed!");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Seeding error:", e);
+    console.error("Seeding error:", e);
     process.exit(1);
   })
   .finally(async () => {
