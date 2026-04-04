@@ -42,7 +42,9 @@ export const updateUser = async (req: Request, res: Response) => {
 
     return res.status(200).json(new ApiResponse(true, updatedUser, null));
   } catch (error: any) {
-    return res.status(400).json(
+    const isNotFound = error.message === "User not found";
+
+    return res.status(isNotFound ? 404 : 400).json(
       new ApiResponse(false, null, {
         message: error.message || "Failed to update user",
       }),

@@ -5,7 +5,7 @@ export const getWeekKey = (date: Date): string => {
   const week1 = new Date(d.getFullYear(), 0, 4);
   const weekNum =
     Math.round(
-      ((d.getTime() - week1.getTime()) / 86400000 -
+      ((d.getTime() - week1.getTime()) / (24 * 60 * 60 * 1000) -
         3 +
         ((week1.getDay() + 6) % 7)) /
         7,

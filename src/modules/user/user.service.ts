@@ -91,7 +91,7 @@ export const updateUserService = async (
     throw new Error("User not found");
   }
 
-  if (currentUser.userId == userId && data.role) {
+  if (currentUser.userId === userId && data.role) {
     throw new Error("You cannot change your own role");
   }
 
