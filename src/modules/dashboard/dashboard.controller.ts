@@ -62,3 +62,16 @@ export const getTrends = async (_req: Request, res: Response) => {
     );
   }
 };
+
+export const getDashboard = async (_req: Request, res: Response) => {
+  const [summary, categories, recent, trends] = await Promise.all([
+    getSummaryService(),
+    getCategoryBreakdownService(),
+    getRecentActivityService(),
+    getTrendsService(),
+  ]);
+
+  return res.json(
+    new ApiResponse(true, { summary, categories, recent, trends }, null),
+  );
+};

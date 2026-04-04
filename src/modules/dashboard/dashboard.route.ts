@@ -4,12 +4,21 @@ import {
   getCategoryBreakdown,
   getRecentActivity,
   getTrends,
+  getDashboard,
 } from "./dashboard.controller";
 import { authMiddleware } from "../../middleware/auth.middleware";
 import { requirePermission } from "../../middleware/role.middleware";
 import { Permission } from "../../config/permissions";
 
 const router = Router();
+
+// combined single endpoint
+router.get(
+  "/",
+  authMiddleware,
+  requirePermission(Permission.READ_DASHBOARD),
+  getDashboard,
+);
 
 router.get(
   "/summary",
