@@ -30,7 +30,7 @@ export const getRecords = async (req: Request, res: Response) => {
   } catch (error: any) {
     return res.status(500).json(
       new ApiResponse(false, null, {
-        message: "Failed to fetch records",
+        message: `Failed to fetch records: ${error}`,
       }),
     );
   }

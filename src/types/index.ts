@@ -1,4 +1,8 @@
-import type { Role } from "../../generated/prisma/enums";
+import type {
+  Category,
+  Role,
+  TransactionType,
+} from "../../generated/prisma/enums";
 import { AuditAction, AuditEntity } from "../../generated/prisma/enums";
 
 export type errorMessage = {
@@ -18,3 +22,11 @@ export type AuditLogParams = {
   userId: string;
   metadata?: any;
 };
+
+export interface CreateRecordInput {
+  amount: number;
+  type: TransactionType;
+  category: Category;
+  date: string;
+  notes?: string;
+}

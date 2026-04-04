@@ -3,12 +3,16 @@ import { logAudit } from "../../utils/auditLogger";
 import {
   AuditAction,
   AuditEntity,
+  Category,
   TransactionType,
 } from "../../../generated/prisma/enums";
 import type { FinancialRecordWhereInput } from "../../../generated/prisma/models";
-import type { User } from "../../types";
+import type { CreateRecordInput, User } from "../../types";
 
-export const createRecordService = async (data: any, currentUser: User) => {
+export const createRecordService = async (
+  data: CreateRecordInput,
+  currentUser: User,
+) => {
   const record = await prisma.financialRecord.create({
     data: {
       amount: data.amount,
@@ -31,11 +35,22 @@ export const createRecordService = async (data: any, currentUser: User) => {
 };
 
 export const getRecordsService = async (query: any) => {
-  const { type, category, startDate, endDate } = query;
+  const { type, category, startDate, endDate, page = 1, limit = 10 } = query;
+
+  const skip = (Number(page) - 1) * Number(limit);
+  const take = Math.min(Number(limit), 100);
 
   const where: FinancialRecordWhereInput = {
     isDeleted: false,
   };
+
+  if (type && !Object.values(TransactionType).includes(type)) {
+    throw new Error(`Invalid type: ${type}`);
+  }
+
+  if (category && !Object.values(Category).includes(category)) {
+    throw new Error(`Invalid category: ${category}`);
+  }
 
   if (type) {
     where.type = type;
@@ -51,12 +66,25 @@ export const getRecordsService = async (query: any) => {
     if (endDate) where.date.lte = new Date(endDate);
   }
 
-  const records = await prisma.financialRecord.findMany({
-    where,
-    orderBy: { date: "desc" },
-  });
+  const [records, total] = await Promise.all([
+    prisma.financialRecord.findMany({
+      where,
+      orderBy: { date: "desc" },
+      skip,
+      take,
+    }),
+    prisma.financialRecord.count({ where }),
+  ]);
 
-  return records;
+  return {
+    data: records,
+    pagination: {
+      total,
+      page: Number(page),
+      limit: take,
+      totalPages: Math.ceil(total / take),
+    },
+  };
 };
 
 export const getRecordByIdService = async (id: string) => {
@@ -76,7 +104,7 @@ export const getRecordByIdService = async (id: string) => {
 
 export const updateRecordService = async (
   id: string,
-  data: any,
+  data: CreateRecordInput,
   currentUser: User,
 ) => {
   const existing = await prisma.financialRecord.findFirst({
@@ -130,5 +158,5 @@ export const deleteRecordService = async (id: string, currentUser: User) => {
     userId: currentUser.userId,
   }).catch(console.error);
 
-  return { message: "Record deleted successfully" };
+  return { message: "Record deleted successfully", id };
 };
