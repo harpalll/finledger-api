@@ -8,19 +8,15 @@ export const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/v1/health", (_, res) => {
-  return res.status(200).json({
-    message: "finledger-api v1 is up and running!",
-  });
-});
-
 import authRoutes from "./modules/auth/auth.route";
 import userRoutes from "./modules/user/user.route";
 import recordRoutes from "./modules/record/record.route";
 import dashboardRoutes from "./modules/dashboard/dashboard.route";
+import healthRoutes from "./modules/health/health.route";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/records", recordRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
+app.use("/api/v1/health", healthRoutes);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
