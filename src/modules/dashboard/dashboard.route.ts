@@ -197,7 +197,7 @@ router.get(
 router.get(
   "/trends",
   authMiddleware,
-  requirePermission(Permission.READ_RECORD),
+  requirePermission(Permission.READ_DASHBOARD),
   getTrends,
 );
 
