@@ -15,7 +15,9 @@ app.get("/api/v1/health", (_, res) => {
 import authRoutes from "./modules/auth/auth.route";
 import userRoutes from "./modules/user/user.route";
 import recordRoutes from "./modules/record/record.route";
+import dashboardRoutes from "./modules/dashboard/dashboard.route";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/records", recordRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);

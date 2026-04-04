@@ -6,8 +6,9 @@ import {
   TransactionType,
 } from "../../../generated/prisma/enums";
 import type { FinancialRecordWhereInput } from "../../../generated/prisma/models";
+import type { User } from "../../types";
 
-export const createRecordService = async (data: any, currentUser: any) => {
+export const createRecordService = async (data: any, currentUser: User) => {
   const record = await prisma.financialRecord.create({
     data: {
       amount: data.amount,
@@ -76,7 +77,7 @@ export const getRecordByIdService = async (id: string) => {
 export const updateRecordService = async (
   id: string,
   data: any,
-  currentUser: any,
+  currentUser: User,
 ) => {
   const existing = await prisma.financialRecord.findFirst({
     where: { id, isDeleted: false },
@@ -108,7 +109,7 @@ export const updateRecordService = async (
   return updated;
 };
 
-export const deleteRecordService = async (id: string, currentUser: any) => {
+export const deleteRecordService = async (id: string, currentUser: User) => {
   const record = await prisma.financialRecord.findFirst({
     where: { id, isDeleted: false },
   });
