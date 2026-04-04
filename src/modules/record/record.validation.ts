@@ -3,7 +3,13 @@ import { TransactionType, Category } from "../../../generated/prisma/enums";
 
 export const createRecordSchema = z.object({
   amount: z
-    .number({ error: "Amount is required" })
+    .number({
+      error: (issue) => {
+        // issue.code === "invalid_type"
+        if (issue.input === undefined) return "Amount is required";
+        return "Amount must be number only";
+      },
+    })
     .positive("Amount must be greater than 0"),
 
   type: z.nativeEnum(TransactionType),
