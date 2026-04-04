@@ -5,7 +5,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/v1/health:
+ * /health:
  *   get:
  *     summary: Health check endpoint
  *     description: Returns API health status, uptime, version, and dependency health checks.
