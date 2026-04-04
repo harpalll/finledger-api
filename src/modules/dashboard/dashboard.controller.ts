@@ -51,9 +51,10 @@ export const getRecentActivity = async (req: Request, res: Response) => {
   }
 };
 
-export const getTrends = async (_req: Request, res: Response) => {
+export const getTrends = async (req: Request, res: Response) => {
   try {
-    const data = await getTrendsService();
+    const period = req.query.period === "weekly" ? "weekly" : "monthly";
+    const data = await getTrendsService(period);
 
     return res.status(200).json(new ApiResponse(true, data, null));
   } catch {
