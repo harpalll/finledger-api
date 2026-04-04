@@ -6,17 +6,11 @@ import {
   Role,
   UserStatus,
 } from "../../../generated/prisma/enums";
-import type { User } from "../../types";
+import type { CreateUserInput, UpdateUserInput, User } from "../../types";
 import { logAudit } from "../../utils/auditLogger";
 
 export const createUserService = async (
-  data: {
-    name: string;
-    email: string;
-    password: string;
-    role?: Role;
-    status?: UserStatus;
-  },
+  data: CreateUserInput,
   currentUser: User,
 ) => {
   const existingUser = await prisma.user.findUnique({
@@ -59,8 +53,17 @@ export const createUserService = async (
   };
 };
 
-export const getUsersService = async () => {
+export const getUsersService = async (query: {
+  role?: Role;
+  status?: UserStatus;
+}) => {
+  const { role, status } = query;
+
   const users = await prisma.user.findMany({
+    where: {
+      ...(role && { role }),
+      ...(status && { status }),
+    },
     select: {
       id: true,
       name: true,
@@ -69,6 +72,7 @@ export const getUsersService = async () => {
       status: true,
       createdAt: true,
     },
+    orderBy: { createdAt: "desc" },
   });
 
   return users;
@@ -76,11 +80,7 @@ export const getUsersService = async () => {
 
 export const updateUserService = async (
   userId: string,
-  data: {
-    name?: string;
-    role?: Role;
-    status?: UserStatus;
-  },
+  data: UpdateUserInput,
   currentUser: User,
 ) => {
   const user = await prisma.user.findUnique({

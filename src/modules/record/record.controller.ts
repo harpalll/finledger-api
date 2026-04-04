@@ -5,6 +5,7 @@ import {
   getRecordByIdService,
   updateRecordService,
   deleteRecordService,
+  exportRecordsService,
 } from "./record.service";
 import { ApiResponse } from "../../utils/ApiResponse";
 
@@ -79,6 +80,33 @@ export const deleteRecord = async (req: Request, res: Response) => {
     return res.status(400).json(
       new ApiResponse(false, null, {
         message: error.message || "Failed to delete record",
+      }),
+    );
+  }
+};
+
+export const exportRecords = async (req: Request, res: Response) => {
+  try {
+    const result = await exportRecordsService(req.query);
+
+    if (result.type === "csv") {
+      res.header("Content-Type", "text/csv");
+      res.attachment(`records-${Date.now()}.csv`);
+      return res.send(result.data);
+    }
+
+    if (result.type === "excel") {
+      res.header(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      );
+      res.attachment(`records-${Date.now()}.xlsx`);
+      return res.send(result.data);
+    }
+  } catch (error: any) {
+    return res.status(500).json(
+      new ApiResponse(false, null, {
+        message: error.message || "Failed to export records",
       }),
     );
   }

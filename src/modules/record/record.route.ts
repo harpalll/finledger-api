@@ -5,6 +5,7 @@ import {
   getRecordById,
   updateRecord,
   deleteRecord,
+  exportRecords,
 } from "./record.controller";
 import { validateData } from "../../middleware/validation.middleware";
 import { createRecordSchema, updateRecordSchema } from "./record.validation";
@@ -27,6 +28,13 @@ router.get(
   authMiddleware,
   requirePermission(Permission.READ_RECORD),
   getRecords,
+);
+
+router.get(
+  "/export",
+  authMiddleware,
+  requirePermission(Permission.READ_RECORD),
+  exportRecords,
 );
 
 router.get(

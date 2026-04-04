@@ -20,9 +20,9 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getUsers = async (_: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await getUsersService();
+    const users = await getUsersService(req.query);
 
     return res.status(200).json(new ApiResponse(true, users, null));
   } catch (error: any) {

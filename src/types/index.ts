@@ -2,6 +2,7 @@ import type {
   Category,
   Role,
   TransactionType,
+  UserStatus,
 } from "../../generated/prisma/enums";
 import { AuditAction, AuditEntity } from "../../generated/prisma/enums";
 
@@ -22,6 +23,20 @@ export type AuditLogParams = {
   userId: string;
   metadata?: any;
 };
+
+export interface CreateUserInput {
+  name: string;
+  email: string;
+  password: string;
+  role?: Role;
+  status?: UserStatus;
+}
+
+export interface UpdateUserInput {
+  name?: string;
+  role?: Role;
+  status?: UserStatus;
+}
 
 export interface CreateRecordInput {
   amount: number;
