@@ -7,10 +7,14 @@ CSV/Excel export, and Swagger documentation.
 
 ---
 
-## Live Demo
+## Deployed Links & Monitoring
 
-- API Base URL: <deployed-link>
-- Swagger: <deployed-link>/docs
+[![API Status](https://img.shields.io/website?url=https%3A%2F%2F90gmvffh.status.cron-job.org&label=API%20Status)](https://90gmvffh.status.cron-job.org/)
+
+- API Base URL: [finledger-api-1j2f.onrender.com](https://finledger-api-1j2f.onrender.com/)
+- Swagger Docs: [finledger-api-1j2f.onrender.com/docs](https://finledger-api-1j2f.onrender.com/docs)
+- API Status: [90gmvffh.status.cron-job.org](https://90gmvffh.status.cron-job.org/)
+- Health Check: [finledger-api-1j2f.onrender.com/api/v1/health](https://finledger-api-1j2f.onrender.com/api/v1/health)
 
 ---
 
@@ -385,15 +389,14 @@ export type ErrorMessage = {
 - Unit & integration tests
 - Multi-tenant support
 
-## Example Flow
+---
 
-1. Login → `/auth/login`
-2. Copy token
-3. Authorize in Swagger
-4. Test:
-   - Users
-   - Records
-   - Dashboard
-   - Export
+## Author
+
+Built by **[Harpalsinh Sindhav](https://github.com/harpalll)**
+
+- GitHub: [@harpalll](https://github.com/harpalll)
+- LinkedIn: [Harpalsinh Sindhav](https://www.linkedin.com/in/harpalsinh-sindhav)
+- X: [@harpalll_dev](https://x.com/harpalll_dev)
 
 ---
