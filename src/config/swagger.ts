@@ -10,7 +10,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000/api/v1",
+        url: "https://finledger-api-1j2f.onrender.com/api/v1",
       },
     ],
     components: {

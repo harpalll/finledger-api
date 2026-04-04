@@ -2,25 +2,30 @@ import express from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
-import path from "node:path";
 
 export const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..")));
 
 app.get("/", (_, res) => {
-  return res.sendFile(
-    path.join(__dirname, "..", "finledger-api-documentation.html"),
+  res.status(200).json(
+    new ApiResponse(
+      true,
+      {
+        message: "Hello World :) access swagger docs at /docs",
+      },
+      null,
+    ),
   );
-}); // bruno docs
+});
 
 import authRoutes from "./modules/auth/auth.route";
 import userRoutes from "./modules/user/user.route";
 import recordRoutes from "./modules/record/record.route";
 import dashboardRoutes from "./modules/dashboard/dashboard.route";
 import healthRoutes from "./modules/health/health.route";
+import { ApiResponse } from "./utils/ApiResponse";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
