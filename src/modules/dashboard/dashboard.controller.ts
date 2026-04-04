@@ -35,9 +35,11 @@ export const getCategoryBreakdown = async (_req: Request, res: Response) => {
   }
 };
 
-export const getRecentActivity = async (_req: Request, res: Response) => {
+export const getRecentActivity = async (req: Request, res: Response) => {
   try {
-    const data = await getRecentActivityService();
+    const limit = Number(req.query.limit);
+
+    const data = await getRecentActivityService(limit);
 
     return res.status(200).json(new ApiResponse(true, data, null));
   } catch {

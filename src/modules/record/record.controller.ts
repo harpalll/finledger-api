@@ -10,7 +10,7 @@ import { ApiResponse } from "../../utils/ApiResponse";
 
 export const createRecord = async (req: Request, res: Response) => {
   try {
-    const record = await createRecordService(req.body, req.user);
+    const record = await createRecordService(req.body, req.user!);
 
     return res.status(201).json(new ApiResponse(true, record, null));
   } catch (error: any) {
@@ -56,7 +56,7 @@ export const updateRecord = async (req: Request, res: Response) => {
   try {
     const id = req.params.id as string;
 
-    const updated = await updateRecordService(id, req.body, req.user);
+    const updated = await updateRecordService(id, req.body, req.user!);
 
     return res.status(200).json(new ApiResponse(true, updated, null));
   } catch (error: any) {
@@ -72,7 +72,7 @@ export const deleteRecord = async (req: Request, res: Response) => {
   try {
     const id = req.params.id as string;
 
-    const result = await deleteRecordService(id, req.user);
+    const result = await deleteRecordService(id, req.user!);
 
     return res.status(200).json(new ApiResponse(true, result, null));
   } catch (error: any) {

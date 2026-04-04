@@ -63,7 +63,7 @@ export const getCategoryBreakdownService = async () => {
   return Object.values(map);
 };
 
-export const getRecentActivityService = async () => {
+export const getRecentActivityService = async (limit = 5) => {
   return prisma.financialRecord.findMany({
     where: {
       isDeleted: false,
@@ -71,34 +71,39 @@ export const getRecentActivityService = async () => {
     orderBy: {
       createdAt: "desc",
     },
-    take: 5,
+    take: Math.min(limit, 20),
+    select: {
+      id: true,
+      amount: true,
+      type: true,
+      category: true,
+      date: true,
+      notes: true,
+    },
   });
 };
 
 export const getTrendsService = async () => {
-  const records = await prisma.financialRecord.findMany({
+  const result = await prisma.financialRecord.groupBy({
+    by: ["date", "type"],
+    _sum: { amount: true },
     where: { isDeleted: false },
-    orderBy: { date: "asc" },
   });
 
   const monthlyMap: Record<string, { income: number; expense: number }> = {};
 
-  records.forEach((record) => {
-    const month = record.date.toISOString().slice(0, 7);
+  result.forEach((item) => {
+    const month = item.date.toISOString().slice(0, 7); // "2024-01"
+    if (!monthlyMap[month]) monthlyMap[month] = { income: 0, expense: 0 };
 
-    if (!monthlyMap[month]) {
-      monthlyMap[month] = { income: 0, expense: 0 };
-    }
-
-    if (record.type === "INCOME") {
-      monthlyMap[month].income += Number(record.amount);
+    if (item.type === TransactionType.INCOME) {
+      monthlyMap[month].income += Number(item._sum.amount || 0);
     } else {
-      monthlyMap[month].expense += Number(record.amount);
+      monthlyMap[month].expense += Number(item._sum.amount || 0);
     }
   });
 
-  return Object.entries(monthlyMap).map(([month, data]) => ({
-    month,
-    ...data,
-  }));
+  return Object.entries(monthlyMap)
+    .map(([month, data]) => ({ month, ...data }))
+    .sort((a, b) => a.month.localeCompare(b.month));
 };
