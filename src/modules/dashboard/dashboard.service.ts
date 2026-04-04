@@ -1,5 +1,9 @@
 import { prisma } from "../../config/db";
 import { TransactionType } from "../../../generated/prisma/enums";
+import type {
+  Category,
+  FinancialRecord,
+} from "../../../generated/prisma/client";
 
 export const getSummaryService = async () => {
   const income = await prisma.financialRecord.aggregate({
@@ -30,17 +34,33 @@ export const getSummaryService = async () => {
 
 export const getCategoryBreakdownService = async () => {
   const result = await prisma.financialRecord.groupBy({
-    by: ["category"],
+    by: ["category", "type"],
     _sum: { amount: true },
-    where: {
-      isDeleted: false,
-    },
+    where: { isDeleted: false },
   });
 
-  return result.map((item) => ({
-    category: item.category,
-    total: Number(item._sum.amount || 0),
-  }));
+  const map = {} as Record<
+    Category,
+    { category: Category; income: number; expense: number }
+  >;
+
+  result.forEach((item) => {
+    if (!map[item.category]) {
+      map[item.category] = {
+        category: item.category,
+        income: 0,
+        expense: 0,
+      };
+    }
+
+    if (item.type === TransactionType.INCOME) {
+      map[item.category].income = Number(item._sum.amount || 0);
+    } else {
+      map[item.category].expense = Number(item._sum.amount || 0);
+    }
+  });
+
+  return Object.values(map);
 };
 
 export const getRecentActivityService = async () => {
